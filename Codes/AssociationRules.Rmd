@@ -1,0 +1,36 @@
+---
+title: "Associativité Lab2"
+author: "Parhelion"
+date: "16 novembre 2018"
+output: html_document
+---
+```{r}
+library(arulesViz)
+library(arules)
+library(FactoMineR)
+library(ggplot2)
+```
+
+
+```{r setup, include=FALSE}
+df=read.csv("DataForAssociationRules.csv",header=T,sep="\t")
+df.yes=df[which(df$Class=="No"),]
+df.yes=subset(df.yes,select =-c(CLASS,STATUS) )
+df.yes$Number.of.houses=as.factor(df.yes$Number.of.houses)
+df.yes$Avg.size.household=as.factor(df.yes$Avg.size.household)
+df.yes_Dem=df.yes[,1:36]
+head(df.yes_Dem)
+```
+
+
+```{r}
+aux <- as(df.yes_Dem, "transactions")
+aux
+rules <- apriori(aux, parameter = list(sup=0.1,conf=0.8,target="rules",minlen=2))
+rules_conf <- sort (rules, by="lift", decreasing=TRUE) # 'high-confidence' rules.
+inspect(head(rules_conf,20))
+```
+
+En anaysant les variables sociodémographiques à l'aide de l'algorithme d'associativité apriori , nous trouvons que le profil type des non interessés est :
+n'est pas Roman Catholique , n'a pas un grand niveau d'etude et ne fait pas partie de la meilleure classe sociale . Son revenu est moyen. De plus en général il n est ni un fermier ni un entrepreneur 
+
